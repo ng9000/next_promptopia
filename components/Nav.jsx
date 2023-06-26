@@ -73,7 +73,7 @@ const Nav = () => {
       </div>
 
       {/* Mobile Navigation */}
-      {/* <div className="sm:hidden flex relative">
+      <div className="sm:hidden flex relative">
         {session?.user ? (
           <div className="flex">
             <Image
@@ -131,7 +131,7 @@ const Nav = () => {
               ))}
           </>
         )}
-      </div> */}
+      </div>
     </nav>
   );
 };
