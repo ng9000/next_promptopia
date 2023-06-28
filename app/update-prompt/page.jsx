@@ -3,9 +3,6 @@ import React, { useEffect, useState } from "react";
 import Form from "@/components/Form";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export const metadata = {
-  title: "Edit Prompt",
-};
 const EditPrompt = () => {
   const router = useRouter();
   const searchParams = useSearchParams();

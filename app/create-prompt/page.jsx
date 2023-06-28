@@ -4,10 +4,6 @@ import Form from "@/components/Form";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-export const metadata = {
-  title: "Create Prompt",
-};
-
 const CreatePrompt = () => {
   const router = useRouter();
   const { data: session } = useSession();
