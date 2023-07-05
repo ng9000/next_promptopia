@@ -1,14 +1,18 @@
-import Feed from "@/components/Feed";
+import Feed from "@/components/feed/feed";
+import Sidebar from "@/components/nav-sidebar/sidebar";
+import NewsFeed from "@/components/news-right-sidebar/NewsFeed";
 
 const Home = () => {
   return (
-    <section className="w-full flex-center flex-col">
-      <h1 className="head_text text-center">
-        Discover and share
-        <br className="max-md:hidden" />
-        <span className="orange_gradient">AI-powered Prompts</span>
-      </h1>
+    <section className="layout">
+      {/* <h1 className="head_text text-center">
+        {/* Discover and share
+       <br className="max-md:hidden" /> 
+        <span className="orange_gradient">Twitter</span>
+      </h1> */}
+      <Sidebar />
       <Feed />
+      <NewsFeed />
     </section>
   );
 };

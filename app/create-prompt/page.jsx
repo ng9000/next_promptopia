@@ -8,6 +8,7 @@ const CreatePrompt = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [submitting, setSubmitting] = useState(false);
+  const [image, setImage] = useState("");
   const [post, setPost] = useState({
     prompt: "",
     tag: "",
@@ -16,23 +17,35 @@ const CreatePrompt = () => {
   const createPrompt = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    try {
-      const response = await fetch("api/prompt/new", {
-        method: "POST",
-        body: JSON.stringify({
-          prompt: post.prompt,
-          userId: session?.user.id,
-          tag: post.tag,
-        }),
-      });
-      if (response.ok) {
-        router.push("/");
+    if (session?.user.id) {
+      try {
+        const response = await fetch("api/prompt/new", {
+          method: "POST",
+          body: JSON.stringify({
+            prompt: post.prompt,
+            userId: session?.user.id,
+            tag: post.tag,
+            likes: 0,
+            image: image,
+          }),
+        });
+        if (response.ok) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setSubmitting(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitting(false);
     }
+  };
+
+  const imageUpload = (e) => {
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      setImage(reader.result);
+    };
   };
   return (
     <div>
@@ -42,6 +55,7 @@ const CreatePrompt = () => {
         setPost={setPost}
         submitting={submitting}
         handleSubmit={createPrompt}
+        imageUpload={imageUpload}
       />
     </div>
   );

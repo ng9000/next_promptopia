@@ -2,7 +2,7 @@ import Nav from "@/components/Nav";
 import Provider from "@/components/Provider";
 import "@/styles/globals.css";
 export const metadata = {
-  title: "Promptopia",
+  title: "Twitter",
   description: "AI prompts",
 };
 const RootLayout = ({ children }) => {
