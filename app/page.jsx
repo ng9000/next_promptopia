@@ -1,4 +1,4 @@
-import Feed from "@/components/feed/feed";
+import Feed from "@/components/feed/Feed";
 import Sidebar from "@/components/nav-sidebar/sidebar";
 import NewsFeed from "@/components/news-right-sidebar/NewsFeed";
 
