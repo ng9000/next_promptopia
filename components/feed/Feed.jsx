@@ -1,53 +1,85 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Tweet from "./tweet";
+import RetweetForm from "../retweetForm/RetweetForm";
+import { useSession } from "next-auth/react";
 
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchedResults, setSearchedResults] = useState([]);
+  const { data: session } = useSession();
 
-  const fetchPosts = async () => {
-    const response = await fetch("/api/prompt");
+  const fetchPosts = async (id) => {
+    // const response = await fetch("/api/prompt");
+    // const data = await response.json();
+    // setAllPosts(data.reverse());
+    const response = await fetch(`api/users/${id}/post`);
     const data = await response.json();
-    setAllPosts(data);
+    setAllPosts(allPosts.concat(data));
   };
 
   useEffect(() => {
-    fetchPosts();
+    if (allPosts.length === 0)
+      session?.user?.following?.map((userId) => {
+        fetchPosts(userId);
+      });
   }, []);
+
+  const filterPrompts = (searchtext) => {
+    const regex = new RegExp(searchtext, "i");
+    return allPosts.filter(
+      (item) =>
+        regex.test(item.creator.username) ||
+        regex.test(item.tag) ||
+        regex.test(item.prompt)
+    );
+  };
+
+  useEffect(() => {
+    const searchTimeout = setTimeout(() => {
+      const searchResult = filterPrompts(searchText);
+      setSearchedResults(searchResult);
+    }, 100);
+
+    return () => {
+      clearTimeout(searchTimeout);
+    };
+  }, [searchText]);
+
+  const handleSearchChange = (e) => {
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value);
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = filterPrompts(e.target.value);
+        setSearchedResults(searchResult);
+      }, 100)
+    );
+  };
   return (
     <div>
       <span className="blue_gradient text-3xl">Home</span>
       <div className="layout__main">
-        <Tweet tweet={allPosts} setAllPosts={setAllPosts} allPosts={allPosts} />
-        {/* Tweet with image */}
-        {/* <div className="tweet">
-          <ProfileImage />
-          <div className="tweet__main">
-            <div className="tweet__header">
-              <div className="tweet__author-name">Chris Martin</div>
-              <div className="tweet__author-slug">@chris_martin</div>
-              <div className="tweet__publish-time">15h</div>
-            </div>
-            <div className="tweet__content">
-              One of my favorite things about the "ergonomics" of haskell is
-              being able to leave underscores in code that isn't finished yet,
-              and the type checker still works and provides useful information
-              about the incomplete code. ("holes" --
-              <a href="https://typeclasses.com/typed-holes">
-                https://typeclasses.com/typed-holes
-              </a>
-              )
-              <Image
-                className="tweet__image"
-                src="/assets/images/profile-image-1.jpg"
-                width={0}
-                height={0}
-                sizes="100vw"
-                style={{ width: "100%", height: "auto" }} // option
-              />
-            </div>
-          </div>
-        </div> */}
+        <form className="relative w-full flex-center">
+          <input
+            type="search"
+            placeholder="search for a tag or username"
+            value={searchText}
+            onChange={handleSearchChange}
+            required
+            className="search_input peer"
+          />
+        </form>
+        {/* <RetweetForm /> */}
+        <Tweet
+          tweet={searchText ? searchedResults : allPosts}
+          setAllPosts={setAllPosts}
+          fetchPosts={fetchPosts}
+          setSearchedResults={setSearchText}
+        />
       </div>
     </div>
   );

@@ -128,7 +128,7 @@
 
 /* Form Component */
 .form_textarea {
-  @apply w-full flex rounded-lg h-[200px] mt-2 p-3 text-sm text-gray-500 outline-0;
+  @apply flex rounded-lg h-[200px] mt-2 p-3 text-sm text-gray-500 outline-0;
 }
 
 .form_input {
@@ -190,6 +190,11 @@
   display: none;
 }
 
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
 /* Tweet feed */
 
 .layout__main {
@@ -201,14 +206,35 @@
   margin-bottom: 2px;
   padding: 10px 15px;
 }
-
+.retweet {
+  border-bottom: 1px solid #c8edff;
+}
+.retweet_data {
+  display: flex;
+  margin-bottom: 2px;
+  padding: 10px 15px;
+}
+.tweet-page {
+  width: 90%;
+}
+.comment {
+  display: flex;
+  border-bottom: 1px solid #e6ecf0;
+  padding: 5px 7px;
+}
+#show_tweet {
+  text-decoration: none;
+  color: #212529;
+}
 .tweet:hover {
   background: rgba(0, 0, 0, 0.03);
-  cursor: pointer;
+}
+.retweet:hover {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .tweet a {
-  color: #1b94e0;
+  /* color: #1b94e0; */
   text-decoration: none;
 }
 
@@ -217,8 +243,12 @@
 }
 
 .tweet__author-logo {
-  width: 49px;
-  height: 49px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.comment__author-logo {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   margin-right: 10px;
 }
@@ -391,8 +421,48 @@
   min-width: 67px;
   text-align: center;
 }
-
+.following-button {
+  border: 1px solid #dddddd;
+  color: #ffffff;
+  background-color: #1da0f2;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 15px;
+  padding: 5px;
+  min-width: 67px;
+  text-align: center;
+}
 .who-to-follow__button:hover {
   background: rgba(29, 161, 242, 0.1);
   cursor: pointer;
+}
+.chat_search_user {
+  padding: 6px 10px 10px 10px;
+  margin-right: 2px;
+}
+.delete_upload_user {
+  color: white;
+  font-size: 50px;
+  cursor: pointer;
+  background-color: #727272;
+  padding: 10px;
+  border-radius: 50%;
+  position: absolute;
+  top: 19%;
+  left: 190px;
+}
+.image_upload {
+  height: 200px;
+  margin: 20px;
+  border: 5px solid #acacac;
+  border-radius: 10px;
+}
+
+.new_tweet {
+  color: white;
+  font-size: 50px;
+  cursor: pointer;
+  background-color: #727272;
+  padding: 10px;
+  border-radius: 50%;
 }

@@ -1,79 +1,110 @@
-import React from "react";
+"use client";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 
 const NewsFeed = () => {
+  const [explore, setExplore] = useState([]);
+  const [followUsers, setFollowUsers] = useState([]);
+  const { data: session } = useSession();
+  useEffect(() => {
+    getExploreData();
+  }, []);
+
+  const getExploreData = async () => {
+    try {
+      const response = await fetch("/api/hashtags");
+      const tags = await response.json();
+      const sortedTags = tags.sort((a, b) => b.times_used - a.times_used);
+      const exploreData = sortedTags.slice(0, 3);
+      setExplore(exploreData);
+
+      const users = await fetch("api/users/random");
+      const follow = await users.json();
+      //  const followSlice = follow.slice(0, 3);
+      setFollowUsers(follow);
+    } catch (error) {
+      console.error("Failed to fetch explore data:", error);
+    }
+  };
+
+  const handleFollow = async (userId) => {
+    await fetch("api/users/follow", {
+      method: "PATCH",
+      body: JSON.stringify({
+        sessionUser: session?.user.id,
+        newFollow: userId,
+      }),
+    });
+  };
+
   return (
-    <div className="layout__right-sidebar-container">
+    <div className="layout__right-sidebar-container ml-5">
       <div className="layout__right-sidebar">
         <div className="trends-for-you">
-          <div className="trends-for-you__block">
-            <div className="trends-for-you__heading">Trends for you</div>
-          </div>
-          <div className="trends-for-you__block">
-            <div className="trends-for-you__meta-information">
+          {explore.length === 0 ? (
+            ""
+          ) : (
+            <>
+              <div className="trends-for-you__block">
+                <div className="trends-for-you__heading">Trends</div>
+              </div>
+              {explore.map((tag) => (
+                <div className="trends-for-you__block" key={tag._id}>
+                  {/* <div className="trends-for-you__meta-information">
               Trending in Germany
-            </div>
-            <div className="trends-for-you__trend-name">#iPhone12</div>
-            <div className="trends-for-you__meta-information">155k Tweets</div>
-          </div>
-          <div className="trends-for-you__block">
-            <div className="trends-for-you__meta-information">
-              Trending in Germany
-            </div>
-            <div className="trends-for-you__trend-name">#AmazonPrimeDay</div>
-          </div>
-          <div className="trends-for-you__block">
-            <div className="trends-for-you__meta-information">
-              Trending - Trending
-            </div>
-            <div className="trends-for-you__trend-name">#autos</div>
-            <div className="trends-for-you__meta-information">2,800 Tweets</div>
-          </div>
+            </div> */}
+                  <div className="trends-for-you__trend-name">
+                    {tag.hashtag}
+                  </div>
+                  <div className="trends-for-you__meta-information">
+                    {tag.times_used} Tweets
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
         <div className="who-to-follow">
           <div className="who-to-follow__block">
             <div className="who-to-follow__heading">Who to follow</div>
           </div>
-          <div className="who-to-follow__block">
-            <img
-              className="who-to-follow__author-logo"
-              src="/assets/images/profile-image-1.jpg"
-            />
-            <div className="who-to-follow__content">
-              <div>
-                <div className="who-to-follow__author-name">
-                  Becki (&amp; Chris)
+          {followUsers?.map((user) => (
+            <div key={user._id}>
+              {user._id === session?.user.id ? (
+                ""
+              ) : (
+                <div className={"who-to-follow__block"}>
+                  <img
+                    className="who-to-follow__author-logo"
+                    src={user?.image}
+                  />
+                  <div className="who-to-follow__content">
+                    <div>
+                      <div className="who-to-follow__author-name">
+                        {user?.username}
+                      </div>
+                      {/* <div className="who-to-follow__author-slug">@beckiandchris</div> */}
+                    </div>
+                    {user.followers.includes(session?.user.id) ? (
+                      <div
+                        className="following-button"
+                        // onClick={() => handleFollow(user._id)}
+                      >
+                        Following
+                      </div>
+                    ) : (
+                      <div
+                        className="who-to-follow__button"
+                        onClick={() => handleFollow(user._id)}
+                      >
+                        Follow
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="who-to-follow__author-slug">@beckiandchris</div>
-              </div>
-              <div className="who-to-follow__button">Follow</div>
+              )}
             </div>
-          </div>
-          <div className="who-to-follow__block">
-            <img
-              className="who-to-follow__author-logo"
-              src="/assets/images/profile-image-2.png"
-            />
-            <div className="who-to-follow__content">
-              <div>
-                <div className="who-to-follow__author-name">Elixir Digest</div>
-                <div className="who-to-follow__author-slug">@elixirdigest</div>
-              </div>
-              <div className="who-to-follow__button">Follow</div>
-            </div>
-          </div>
-          <div className="who-to-follow__block">
-            <img
-              className="who-to-follow__author-logo"
-              src="/assets/images/profile-image-3.jpg"
-            />
-            <div className="who-to-follow__content">
-              <div>
-                <div className="who-to-follow__author-name">Chris Martin</div>
-                <div className="who-to-follow__author-slug">@chris_martin</div>
-              </div>
-              <div className="who-to-follow__button">Follow</div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

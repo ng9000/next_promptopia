@@ -13,8 +13,9 @@ export const POST = async (req) => {
             image,
             createdAt
         })
-        await newPrompt.save()
-        return new Response(JSON.stringify(newPrompt), { status: 201 })
+        const savedPrompt = await newPrompt.save()
+        const promptId = savedPrompt._id
+        return new Response(JSON.stringify(promptId), { status: 201 })
     } catch (error) {
         console.log(error);
         return new Response("server Error", { status: 500 })

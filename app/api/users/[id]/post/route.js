@@ -5,10 +5,11 @@ export const GET = async (request, { params }) => {
     try {
         await connectToDB()
 
-        const prompts = await Prompt.find({ creator: params.id }).populate('creator')
-
-        return new Response(JSON.stringify(prompts), { status: 200 })
+        const tweets = await Prompt.find({ creator: params.id }).populate('creator').populate('retweeter')
+        const retweets = await Prompt.find({ retweeter: params.id }).populate('creator').populate('retweeter')
+        const combine = retweets.concat(tweets)
+        return new Response(JSON.stringify(combine), { status: 200 })
     } catch (error) {
-        return new Response("Failed to fetch all prompts", { status: 500 })
+        return new Response("Failed to fetch all tweets", { status: 500 })
     }
 } 

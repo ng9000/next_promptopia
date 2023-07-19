@@ -3,9 +3,9 @@ import { connectToDB } from "@/utils/database";
 
 export const GET = async (request, { params }) => {
     try {
-        await connectToDB()
+        // await connectToDB()
 
-        const prompts = await Prompt.find({ creator: params.id }).populate('creator').populate('retweeter')
+        const prompts = await Prompt.findById(params.id).populate('creator').populate('retweeter')
 
         return new Response(JSON.stringify(prompts), { status: 200 })
     } catch (error) {

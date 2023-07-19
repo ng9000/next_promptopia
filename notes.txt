@@ -1,0 +1,18 @@
+create new prompt 
+get prompt id
+schema comments to obtain object id
+push prompt id in comments
+// done
+
+update comment without reload
+
+
+retweet count
+retweet tracking 
+quoted retweet
+
+new data to be added:
+retweeter
+no of retweets
+quote for retweet
+retweet= true ?

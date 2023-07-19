@@ -12,6 +12,12 @@ const UserSchema = new Schema({
     },
     image: {
         type: String
+    },
+    followers: {
+        type: Array
+    },
+    following: {
+        type: Array
     }
 })
 

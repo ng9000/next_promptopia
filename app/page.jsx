@@ -4,7 +4,7 @@ import NewsFeed from "@/components/news-right-sidebar/NewsFeed";
 
 const Home = () => {
   return (
-    <section className="layout">
+    <section className="layout prevent-select">
       {/* <h1 className="head_text text-center">
         {/* Discover and share
        <br className="max-md:hidden" /> 

@@ -10,17 +10,43 @@ const PromptSchema = new Schema({
         required: [true, 'Prompt is required.'],
     },
     tag: {
-        type: String,
-        required: [true, 'Tag is required.'],
+        type: Array,
+    },
+    original_tag: {
+        type: Array,
     },
     likes: {
         type: Number,
+    },
+    number_of_retweets: {
+        type: Number
     },
     likeIds: {
         type: Array
     },
     image: {
         type: String
+    },
+    createdAt: {
+        type: Date
+    },
+    comments: {
+        type: Array
+    },
+    is_retweet: {
+        type: Boolean
+    },
+    retweeter: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    original_id: {
+        type: String
+    },
+    retweet_data: {
+        quote: { type: String },
+        quote_image: { type: String },
+        retweet_created_at: { type: Date }
     }
 });
 
