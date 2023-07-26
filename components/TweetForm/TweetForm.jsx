@@ -4,7 +4,6 @@ import { FaImage, FaTrash } from "react-icons/fa";
 
 const TweetForm = ({ setAllComments, tweetId }) => {
   const [newComment, setNewComment] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [image, setImage] = useState("");
   const { data: session } = useSession();
 
@@ -18,7 +17,6 @@ const TweetForm = ({ setAllComments, tweetId }) => {
 
   const handleComment = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
 
     if (session?.user.id) {
       try {
@@ -42,7 +40,6 @@ const TweetForm = ({ setAllComments, tweetId }) => {
       } catch (error) {
         console.log(error);
       } finally {
-        setSubmitting(false);
       }
     }
   };
@@ -106,8 +103,10 @@ const TweetForm = ({ setAllComments, tweetId }) => {
         />
         <button
           type="submit"
-          disabled={submitting}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+          disabled={newComment ? "" : true}
+          className={`${
+            newComment ? "bg-blue-500 hover:bg-blue-700" : "bg-blue-300"
+          } text-white font-bold py-1 px-2 rounded`}
         >
           Send
         </button>

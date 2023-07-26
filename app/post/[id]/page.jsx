@@ -22,7 +22,9 @@ const PostView = ({ params }) => {
   }, [post]);
 
   const getPost = async () => {
-    const postResponse = await fetch(`/api/prompt/${params.id}`);
+    const postResponse = await fetch(`/api/prompt/${params.id}`, {
+      cache: "no-cache",
+    });
     const postData = await postResponse.json();
     setPost(postData);
   };
@@ -30,7 +32,9 @@ const PostView = ({ params }) => {
   const loadComments = async () => {
     setAllComments([]);
     post?.comments?.map(async (commentId) => {
-      const commentResponse = await fetch(`/api/comment/search/${commentId}`);
+      const commentResponse = await fetch(`/api/comment/search/${commentId}`, {
+        cache: "no-cache",
+      });
       const commentData = await commentResponse.json();
       setAllComments((prevComments) => [...prevComments, commentData]);
     });

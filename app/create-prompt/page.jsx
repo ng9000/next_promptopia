@@ -17,7 +17,9 @@ const CreatePrompt = () => {
   }, []);
 
   const getTags = async () => {
-    const tags = await fetch("/api/hashtags");
+    const tags = await fetch("/api/hashtags", {
+      cache: "no-cache",
+    });
     const response = await tags.json();
     setTags(response);
   };

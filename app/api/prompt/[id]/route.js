@@ -6,7 +6,7 @@ export const GET = async (request, { params }) => {
     try {
         await connectToDB()
 
-        const prompts = await Prompt.findById(params.id).populate('creator').populate('retweeter')
+        const prompts = await Prompt.findById(params.id).populate('creator').populate('original_creator')
         if (!prompts)
             return new Response("Prompt doesnt exist", { status: 404 })
 

@@ -5,7 +5,7 @@ export const GET = async (request, { params }) => {
     try {
         await connectToDB()
 
-        const prompts = await Prompt.find({ creator: params.id }).populate('creator').populate('retweeter')
+        const prompts = await Prompt.find({ creator: params.id }).populate('creator').populate('original_creator')
 
         return new Response(JSON.stringify(prompts), { status: 200 })
     } catch (error) {

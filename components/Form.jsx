@@ -19,6 +19,7 @@ const Form = ({
   const [selectedSuggestion, setSelectedSuggestion] = useState(0);
   const inputRef = useRef(null);
 
+  console.log(post);
   const handleInputChange = (e) => {
     const value = e.target.value;
     setPost(value);
@@ -57,7 +58,7 @@ const Form = ({
   };
 
   const filterTagsByInput = (tags, post) => {
-    const filterText = post.slice(post.lastIndexOf(key) + 1).toLowerCase();
+    const filterText = post.slice(post?.lastIndexOf(key) + 1).toLowerCase();
     // Filter tags based on the input value
     return tags.filter((tag) =>
       tag?.hashtag?.toLowerCase().includes(filterText)
@@ -127,6 +128,7 @@ const Form = ({
           </button>
         </div>
       </form> */}
+
       <div className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism">
         <div className="w-full max-w-lg relative">
           <label>
@@ -139,7 +141,7 @@ const Form = ({
               rows="6"
               placeholder="Type # to trigger the mention"
               style={{ width: "123%" }}
-              value={post}
+              value={post.prompt}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               ref={inputRef}
@@ -158,7 +160,7 @@ const Form = ({
             >
               <div className="bg-white overflow-auto rounded-lg shadow-md z-10 py-2 border border-gray-300 text-gray-800 text-base absolute">
                 <ul className="list-reset">
-                  {items.map((item, index) => (
+                  {items?.map((item, index) => (
                     <li
                       key={item.hashtag}
                       onClick={() => handleSuggestionClick(item.hashtag)}
@@ -185,7 +187,7 @@ const Form = ({
               }}
             />
             <img
-              src={image}
+              src={image || post?.image}
               alt="test"
               className="rounded-lg border-2 border-cyan-400 h-full"
             />

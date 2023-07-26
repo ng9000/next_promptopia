@@ -128,7 +128,7 @@
 
 /* Form Component */
 .form_textarea {
-  @apply flex rounded-lg h-[200px] mt-2 p-3 text-sm text-gray-500 outline-0;
+  @apply flex rounded-lg mt-2 p-3 text-sm text-gray-500 outline-0;
 }
 
 .form_input {
@@ -198,7 +198,7 @@
 /* Tweet feed */
 
 .layout__main {
-  width: 500px;
+  width: 560px;
 }
 .tweet {
   display: flex;
@@ -288,7 +288,7 @@
 }
 .layout {
   display: grid;
-  grid-template-columns: 275px auto 350px;
+  grid-template-columns: 225px auto 350px;
   margin: 0 auto;
   max-width: 1200px;
 }
@@ -465,4 +465,7 @@
   background-color: #727272;
   padding: 10px;
   border-radius: 50%;
+}
+.original-tweet_margin {
+  margin: 0px 25px 0px 56px;
 }

@@ -4,7 +4,7 @@ import { connectToDB } from "@/utils/database";
 export const POST = async (req) => {
     const {
         creator,
-        retweeter,
+        original_creator,
         prompt,
         quote,
         tag,
@@ -21,7 +21,7 @@ export const POST = async (req) => {
         await connectToDB();
         const newPrompt = Prompt({
             creator: creator,
-            retweeter: retweeter,
+            original_creator: original_creator,
             is_retweet: true,
             prompt,
             retweet_data: {

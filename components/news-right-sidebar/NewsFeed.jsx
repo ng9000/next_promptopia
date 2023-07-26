@@ -6,22 +6,34 @@ const NewsFeed = () => {
   const [explore, setExplore] = useState([]);
   const [followUsers, setFollowUsers] = useState([]);
   const { data: session } = useSession();
+  //console.log(followUsers);
   useEffect(() => {
     getExploreData();
+    getNewFollowers();
   }, []);
+
+  const getNewFollowers = async () => {
+    try {
+      const users = await fetch("api/users/random", {
+        cache: "no-cache",
+      });
+      const follow = await users.json();
+      //  const followSlice = follow.slice(0, 3);
+      setFollowUsers(follow);
+    } catch (error) {
+      console.error("Failed to fetch followers:", error);
+    }
+  };
 
   const getExploreData = async () => {
     try {
-      const response = await fetch("/api/hashtags");
+      const response = await fetch("/api/hashtags", {
+        cache: "no-cache",
+      });
       const tags = await response.json();
       const sortedTags = tags.sort((a, b) => b.times_used - a.times_used);
       const exploreData = sortedTags.slice(0, 3);
       setExplore(exploreData);
-
-      const users = await fetch("api/users/random");
-      const follow = await users.json();
-      //  const followSlice = follow.slice(0, 3);
-      setFollowUsers(follow);
     } catch (error) {
       console.error("Failed to fetch explore data:", error);
     }
@@ -35,6 +47,18 @@ const NewsFeed = () => {
         newFollow: userId,
       }),
     });
+    getNewFollowers();
+  };
+
+  const handleUnfollow = async (userId) => {
+    await fetch("api/users/unfollow", {
+      method: "PATCH",
+      body: JSON.stringify({
+        sessionUser: session?.user.id,
+        newFollow: userId,
+      }),
+    });
+    getNewFollowers();
   };
 
   return (
@@ -85,10 +109,11 @@ const NewsFeed = () => {
                       </div>
                       {/* <div className="who-to-follow__author-slug">@beckiandchris</div> */}
                     </div>
+                    {/* {console.log(user)} */}
                     {user.followers.includes(session?.user.id) ? (
                       <div
                         className="following-button"
-                        // onClick={() => handleFollow(user._id)}
+                        onClick={() => handleUnfollow(user._id)}
                       >
                         Following
                       </div>

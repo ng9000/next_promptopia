@@ -36,7 +36,7 @@ const PromptSchema = new Schema({
     is_retweet: {
         type: Boolean
     },
-    retweeter: {
+    original_creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
     },

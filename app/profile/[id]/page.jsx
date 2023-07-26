@@ -9,7 +9,9 @@ const OtherProfiles = ({ params }) => {
   const [posts, setPosts] = useState([]);
 
   const fetchPosts = async () => {
-    const response = await fetch(`/api/users/${params?.id}/post`);
+    const response = await fetch(`/api/users/${params?.id}/post`, {
+      cache: "no-cache",
+    });
     const data = await response.json();
     setPosts(data);
   };

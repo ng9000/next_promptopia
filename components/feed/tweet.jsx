@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ProfileImage from "./profileImage";
+import React, { useEffect, useState } from "react";
+
 import Image from "next/image";
 import moment from "moment/moment";
 import Like from "./like";
@@ -8,31 +8,50 @@ import Link from "next/link";
 import { FaRetweet } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import RetweetForm from "./RetweetForm";
+import ProfileImage from "./profileImage";
 
 const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
+  const [tags, setTags] = useState([]);
   const [hide, setHide] = useState("");
-  const [quote, setQuote] = useState("retweet");
   const [image, setImage] = useState("");
+  const [showRetweetForm, setShowRetweetForm] = useState("");
+  const [quote, setQuote] = useState("");
   const [quoteImage, setQuoteImage] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    getTags();
+  }, []);
+
   const handleProfileClick = (creator) => {
     if (creator._id === session?.user.id)
       return router.push(`/profile?id=${session?.user.id}`);
     router.push(`/profile/${creator._id}?name=${creator.username}`);
   };
 
+  const getTags = async () => {
+    const tags = await fetch("/api/hashtags", {
+      cache: "no-cache",
+    });
+    const response = await tags.json();
+    setTags(response);
+  };
+
   const handleRetweet = async (tweetData) => {
-    console.log(tweetData);
+    //console.log(tweetData);
+    const trimmedValue = quote.replace(/^\s*[\r\n]/gm, "");
+
     const retweet = await fetch("/api/retweet", {
       method: "POST",
       body: JSON.stringify({
-        creator: tweetData.creator._id,
-        retweeter: session?.user.id,
+        original_creator: tweetData.creator._id,
+        creator: session?.user.id,
         prompt: tweetData.is_retweet
           ? tweetData?.retweet_data.quote
           : tweetData?.prompt,
-        quote: quote,
+        quote: trimmedValue,
         original_tag: tweetData?.tag,
         likes: 0,
         original_id: tweetData._id,
@@ -43,7 +62,11 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
       }),
     });
     const retweetResponse = await retweet.json();
-    fetchPosts();
+    setShowRetweetForm("");
+    setQuote("");
+    //console.log(retweetResponse);
+    // setAllPosts((prevAllPosts) => [...prevAllPosts, retweetResponse]);
+    fetchPosts(session?.user.id);
   };
 
   // const handleTags = (tags) => {
@@ -71,17 +94,18 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
     <>
       {tweet.map((post, index) => (
         <div key={post?._id}>
+          {/* {console.log(post._id)} */}
           {post?.is_retweet ? (
             <div className="retweet">
               <div className="retweet_data">
                 <ProfileImage
-                  profileImage={post?.retweeter.image}
-                  onClick={() => handleProfileClick(post?.retweeter)}
+                  profileImage={post?.creator.image}
+                  onClick={() => handleProfileClick(post?.creator)}
                 />
                 <div className="tweet__main">
                   <div className="tweet__header">
                     <div className="tweet__author-name">
-                      {post?.retweeter.username}
+                      {post?.creator.username}
                     </div>
                     <div className="tweet__publish-time">
                       {moment(post?.retweet_data?.retweet_created_at).fromNow()}
@@ -99,19 +123,19 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
               </div>
 
               {/* Original tweet */}
-              <div className="flex ml-14 border-2 p-2 rounded-lg">
+              <div className="flex border-2 p-2 rounded-lg original-tweet_margin">
                 <ProfileImage
-                  profileImage={post?.creator.image}
+                  profileImage={post?.original_creator.image}
                   is_retweet={true}
-                  onClick={() => handleProfileClick(post?.creator)}
+                  onClick={() => handleProfileClick(post?.original_creator)}
                 />
                 <div className="retweet__main">
                   <div className="tweet__header">
                     <div className="tweet__author-name">
-                      {post?.creator.username}
+                      {post?.original_creator.username}
                     </div>
                     <div className="tweet__publish-time">
-                      {moment(post.createdAt).fromNow()}
+                      {moment(post?.createdAt).fromNow()}
                     </div>
                   </div>
                   <Link
@@ -127,13 +151,13 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
                   <>
                     {post?.image ? (
                       <Image
-                        className="w-full mb-2 mt-5 rounded-s-2xl"
+                        className="w-full mb-2 mt-5 rounded"
                         src={post?.image}
                         width={0}
                         height={0}
                         sizes="100vw"
                         alt="Cant load Image"
-                        style={{ width: "100%", height: "auto" }} // option
+                        style={{ width: "95%", height: "auto" }} // option
                       />
                     ) : (
                       ""
@@ -148,8 +172,9 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
                 <FaRetweet
                   className="inline-flex mx-4 align-baseline text-lg"
                   onClick={() => {
-                    setImage(post?.image);
-                    handleRetweet(post);
+                    setShowRetweetForm(index);
+                    //  setImage(post?.image);
+                    //  handleRetweet(post);
                   }}
                 />
                 <Comment
@@ -213,14 +238,15 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
                 </>
                 {/* Like */}
                 <Like setAllPosts={setAllPosts} allPosts={tweet} post={post} />
-                {/* Comment */}
+                {/* Retweet */}
                 <FaRetweet
                   className="inline-flex mx-4 align-baseline text-lg"
                   onClick={() => {
-                    setImage(post?.image);
-                    handleRetweet(post);
+                    setShowRetweetForm(index);
                   }}
                 />
+
+                {/* Comment */}
                 <Comment
                   postIndex={index}
                   hide={hide}
@@ -231,6 +257,17 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
               </div>
             </div>
           )}
+          <RetweetForm
+            post={post}
+            postIndex={index}
+            setQuoteImage={setQuoteImage}
+            showRetweetForm={showRetweetForm}
+            setQuote={setQuote}
+            quote={quote}
+            handleRetweet={handleRetweet}
+            setShowRetweetForm={setShowRetweetForm}
+            tags={tags}
+          />
         </div>
       ))}
     </>

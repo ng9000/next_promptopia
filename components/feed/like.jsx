@@ -6,7 +6,9 @@ const Like = ({ setAllPosts, allPosts, post }) => {
   const { data: session } = useSession();
 
   const handleUpdateLike = async (promptId) => {
-    const response = await fetch(`/api/prompt/${promptId}`);
+    const response = await fetch(`/api/prompt/${promptId}`, {
+      cache: "no-cache",
+    });
     const data = await response.json();
 
     if (allPosts) {

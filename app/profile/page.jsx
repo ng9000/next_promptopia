@@ -2,21 +2,29 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Profile from "@/components/Profile";
+import { useSession } from "next-auth/react";
 
 const MyProfile = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("id");
   const [posts, setPosts] = useState([]);
+  const { data: session } = useSession();
 
   const fetchPosts = async () => {
-    const response = await fetch(`/api/users/${userId}/post`);
+    const response = await fetch(`/api/users/${userId}/post`, {
+      cache: "no-cache",
+    });
     const data = await response.json();
     setPosts(data);
   };
 
   useEffect(() => {
+    // if (session?.user.id) {
+    //   router.push(`profile/${session?.user.id}`);
+    // } else {
     fetchPosts();
+    // }
   }, []);
 
   const handleUpdate = (post) => {
