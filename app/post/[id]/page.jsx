@@ -52,7 +52,7 @@ const PostView = ({ params }) => {
           </div>
         </div>
         <div className="tweet__content">
-          {post?.prompt} <br /> {post?.tag}
+          {post.is_retweet ? post?.retweet_data?.quote : post?.prompt}
         </div>
 
         {/* Tweet Image */}

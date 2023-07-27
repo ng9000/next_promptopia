@@ -28,7 +28,7 @@ const Nav = () => {
           height={30}
           className="object-contain"
         />
-        <p className="logo_text">Twitter</p>
+        <p className="logo_text">Not Twitter</p>
       </Link>
 
       {/* Desktop Navigation */}

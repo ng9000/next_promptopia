@@ -3,8 +3,8 @@ import Provider from "@/components/Provider";
 import "@/styles/globals.css";
 
 export const metadata = {
-  title: "Twitter",
-  description: "AI prompts",
+  title: "Not Twitter",
+  description: "This is not twitter",
 };
 const RootLayout = ({ children }) => {
   return (

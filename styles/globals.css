@@ -469,3 +469,17 @@
 .original-tweet_margin {
   margin: 0px 25px 0px 56px;
 }
+@media screen and (max-width: 640px) {
+  .layout__right-sidebar-container {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .layout__left-sidebar {
+    display: none;
+  }
+  .layout__right-sidebar-container {
+    display: none;
+  }
+}

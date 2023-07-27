@@ -34,11 +34,10 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    if (allPosts.length === 0 && session?.user?.id) {
+    if (session?.user?.id) {
       fetchFriendsPost();
+      fetchPosts(session?.user.id);
     }
-
-    fetchPosts(session?.user.id);
   }, [session?.user.id]);
 
   const filterPrompts = (searchtext) => {

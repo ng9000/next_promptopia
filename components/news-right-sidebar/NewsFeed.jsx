@@ -63,75 +63,79 @@ const NewsFeed = () => {
 
   return (
     <div className="layout__right-sidebar-container ml-5">
-      <div className="layout__right-sidebar">
-        <div className="trends-for-you">
-          {explore.length === 0 ? (
-            ""
-          ) : (
-            <>
-              <div className="trends-for-you__block">
-                <div className="trends-for-you__heading">Trends</div>
-              </div>
-              {explore.map((tag) => (
-                <div className="trends-for-you__block" key={tag._id}>
-                  {/* <div className="trends-for-you__meta-information">
-              Trending in Germany
-            </div> */}
-                  <div className="trends-for-you__trend-name">
-                    {tag.hashtag}
-                  </div>
-                  <div className="trends-for-you__meta-information">
-                    {tag.times_used} Tweets
-                  </div>
+      {!session?.user.id ? (
+        ""
+      ) : (
+        <div className="layout__right-sidebar">
+          <div className="trends-for-you">
+            {explore.length === 0 ? (
+              ""
+            ) : (
+              <>
+                <div className="trends-for-you__block">
+                  <div className="trends-for-you__heading">Trends</div>
                 </div>
-              ))}
-            </>
-          )}
-        </div>
-        <div className="who-to-follow">
-          <div className="who-to-follow__block">
-            <div className="who-to-follow__heading">Who to follow</div>
-          </div>
-          {followUsers?.map((user) => (
-            <div key={user._id}>
-              {user._id === session?.user.id ? (
-                ""
-              ) : (
-                <div className={"who-to-follow__block"}>
-                  <img
-                    className="who-to-follow__author-logo"
-                    src={user?.image}
-                  />
-                  <div className="who-to-follow__content">
-                    <div>
-                      <div className="who-to-follow__author-name">
-                        {user?.username}
-                      </div>
-                      {/* <div className="who-to-follow__author-slug">@beckiandchris</div> */}
+                {explore.map((tag) => (
+                  <div className="trends-for-you__block" key={tag._id}>
+                    {/* <div className="trends-for-you__meta-information">
+                      Trending in Germany
+                    </div> */}
+                    <div className="trends-for-you__trend-name">
+                      {tag.hashtag}
                     </div>
-                    {/* {console.log(user)} */}
-                    {user.followers.includes(session?.user.id) ? (
-                      <div
-                        className="following-button"
-                        onClick={() => handleUnfollow(user._id)}
-                      >
-                        Following
-                      </div>
-                    ) : (
-                      <div
-                        className="who-to-follow__button"
-                        onClick={() => handleFollow(user._id)}
-                      >
-                        Follow
-                      </div>
-                    )}
+                    <div className="trends-for-you__meta-information">
+                      {tag.times_used} Tweets
+                    </div>
                   </div>
-                </div>
-              )}
+                ))}
+              </>
+            )}
+          </div>
+          <div className="who-to-follow">
+            <div className="who-to-follow__block">
+              <div className="who-to-follow__heading">Who to follow</div>
             </div>
-          ))}
+            {followUsers?.map((user) => (
+              <div key={user._id}>
+                {user._id === session?.user.id ? (
+                  ""
+                ) : (
+                  <div className={"who-to-follow__block"}>
+                    <img
+                      className="who-to-follow__author-logo"
+                      src={user?.image}
+                    />
+                    <div className="who-to-follow__content">
+                      <div>
+                        <div className="who-to-follow__author-name">
+                          {user?.username}
+                        </div>
+                        {/* <div className="who-to-follow__author-slug">@beckiandchris</div> */}
+                      </div>
+                      {/* {console.log(user)} */}
+                      {user.followers.includes(session?.user.id) ? (
+                        <div
+                          className="following-button"
+                          onClick={() => handleUnfollow(user._id)}
+                        >
+                          Following
+                        </div>
+                      ) : (
+                        <div
+                          className="who-to-follow__button"
+                          onClick={() => handleFollow(user._id)}
+                        >
+                          Follow
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
