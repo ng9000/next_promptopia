@@ -15,7 +15,7 @@ const NewsFeed = () => {
   const getNewFollowers = async () => {
     try {
       const users = await fetch("api/users/random", {
-        cache: "no-cache",
+        cache: "no-store",
       });
       const follow = await users.json();
       //  const followSlice = follow.slice(0, 3);
@@ -28,7 +28,7 @@ const NewsFeed = () => {
   const getExploreData = async () => {
     try {
       const response = await fetch("/api/hashtags", {
-        cache: "no-cache",
+        cache: "no-store",
       });
       const tags = await response.json();
       const sortedTags = tags.sort((a, b) => b.times_used - a.times_used);
