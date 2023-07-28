@@ -88,7 +88,7 @@ const CreatePrompt = () => {
             tag: uniqueHashtags.join(),
             likes: 0,
             image: image,
-            retweets: 0,
+            number_of_retweets: 0,
             createdAt: new Date(),
           }),
         });

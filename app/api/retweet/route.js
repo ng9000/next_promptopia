@@ -16,6 +16,7 @@ export const POST = async (req) => {
         original_id,
         retweetedAt,
         quoted_image,
+        number_of_retweets
     } = await req.json();
     try {
         await connectToDB();
@@ -29,6 +30,7 @@ export const POST = async (req) => {
                 quote_image: quoted_image,
                 retweet_created_at: retweetedAt,
             },
+            number_of_retweets,
             tag,
             original_tag,
             retweets,
@@ -45,3 +47,23 @@ export const POST = async (req) => {
         return new Response("server Error", { status: 500 });
     }
 };
+
+
+
+// PATCH
+export const PATCH = async (request) => {
+    const { id, number_of_retweets } = await request.json()
+
+    try {
+        const existingPrompt = await Prompt.findById(id)
+        if (!existingPrompt)
+            return new Response("Prompt doesnt exist", { status: 404 })
+
+        existingPrompt.number_of_retweets = number_of_retweets;
+
+        await existingPrompt.save()
+        return new Response(JSON.stringify(existingPrompt), { status: 200 })
+    } catch (error) {
+        return new Response("Failed to update prompt", { status: 500 })
+    }
+}

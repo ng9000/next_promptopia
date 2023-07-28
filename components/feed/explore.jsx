@@ -13,7 +13,7 @@ const Explore = () => {
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt", {
-      cache: "no-cache",
+      cache: "no-store",
     });
     const data = await response.json();
     setAllPosts(data.reverse());
@@ -29,7 +29,8 @@ const Explore = () => {
       (item) =>
         regex.test(item.creator.username) ||
         regex.test(item.tag) ||
-        regex.test(item.prompt)
+        regex.test(item.prompt) ||
+        regex.test(item?.retweet_data?.quote)
     );
   };
 

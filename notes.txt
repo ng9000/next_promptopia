@@ -17,4 +17,4 @@ no of retweets
 quote for retweet
 retweet= true ?
 
-new page for retweet because original tweet shows rather tha retweet 
+new page for retweet because original tweet shows rather tha retweet (not necessary)

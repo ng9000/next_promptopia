@@ -43,7 +43,12 @@ const Comment = ({ postIndex, hide, tweetId, setHide, comments }) => {
         className={hide !== postIndex ? "hidden" : ""}
         style={{ width: "400px", margin: "auto" }}
       >
-        <TweetForm setAllComments={setAllComments} tweetId={tweetId} />
+        <TweetForm
+          setAllComments={setAllComments}
+          allComments={allComments}
+          tweetId={tweetId}
+          // loadComments={() => loadComments(comments)}
+        />
         {allComments?.map((post, index) => (
           <div key={`${index}_comment`}>
             <div className="comment" key={post?._id}>
@@ -64,7 +69,9 @@ const Comment = ({ postIndex, hide, tweetId, setHide, comments }) => {
                     {moment(post.createdAt).fromNow()}
                   </div>
                 </div>
-                <div className="tweet__content">{post?.prompt}</div>
+                <Link href={`/post/${post._id}`}>
+                  <div className="tweet__content">{post?.prompt}</div>
+                </Link>
 
                 {/* Tweet Image */}
                 <>

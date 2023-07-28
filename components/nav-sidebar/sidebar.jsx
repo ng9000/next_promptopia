@@ -37,6 +37,7 @@ const Sidebar = ({ active }) => {
               className={`${
                 data.name === active ? "sidebar-menu__item--active" : ""
               }`}
+              key={data?.name}
             >
               <Link href={data.path} key={data?.name}>
                 <div className="sidebar-menu__item">

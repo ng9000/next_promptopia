@@ -23,7 +23,7 @@ const PostView = ({ params }) => {
 
   const getPost = async () => {
     const postResponse = await fetch(`/api/prompt/${params.id}`, {
-      cache: "no-cache",
+      cache: "no-store",
     });
     const postData = await postResponse.json();
     setPost(postData);
@@ -33,7 +33,7 @@ const PostView = ({ params }) => {
     setAllComments([]);
     post?.comments?.map(async (commentId) => {
       const commentResponse = await fetch(`/api/comment/search/${commentId}`, {
-        cache: "no-cache",
+        cache: "no-store",
       });
       const commentData = await commentResponse.json();
       setAllComments((prevComments) => [...prevComments, commentData]);
@@ -96,7 +96,9 @@ const PostView = ({ params }) => {
                       {moment(post.createdAt).fromNow()}
                     </div>
                   </div>
-                  <div className="tweet__content">{post?.prompt}</div>
+                  <Link href={`/post/${post._id}`}>
+                    <div className="tweet__content">{post?.prompt}</div>
+                  </Link>
 
                   {/* Tweet Image */}
                   <>

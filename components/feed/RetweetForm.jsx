@@ -63,6 +63,7 @@ const RetweetForm = ({
   };
 
   const items = filterTagsByInput(tags, quote);
+
   const handleSubmit = () => {
     // Remove unnecessary empty lines
     const trimmedValue = quote.replace(/^\s*[\r\n]/gm, "");
@@ -126,7 +127,7 @@ const RetweetForm = ({
               Cancle
             </button>
             <button
-              onClick={() => handleRetweet(post)}
+              onClick={() => handleRetweet(post, postIndex)}
               disabled={quote ? "" : true}
               className={`px-5 py-1.5 text-sm rounded-full text-white mx-1 ${
                 quote ? "bg-sky-500" : "bg-sky-300"

@@ -11,6 +11,13 @@ const Feed = () => {
   const [searchedResults, setSearchedResults] = useState([]);
   const { data: session } = useSession();
 
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchFriendsPost();
+      fetchPosts(session?.user.id);
+    }
+  }, [session?.user.id]);
+
   const fetchPosts = async (id) => {
     const response = await fetch(`api/users/${id}/post`, {
       cache: "no-cache",
@@ -20,8 +27,17 @@ const Feed = () => {
     setAllPosts((prevAllPosts) => {
       const uniquePosts = new Set(prevAllPosts.map((post) => post._id));
       const filteredData = data.filter((post) => !uniquePosts.has(post._id));
-      const combinedArray = [...prevAllPosts, ...filteredData];
-      return combinedArray.reverse();
+      if (allPosts.length === 0) {
+        const reversedPrevAllPosts = prevAllPosts.slice().reverse();
+        const reversedFilteredData = filteredData.slice().reverse();
+        const combinedArray = [
+          ...reversedPrevAllPosts,
+          ...reversedFilteredData,
+        ];
+        return combinedArray;
+      }
+      const x = [...prevAllPosts, ...filteredData];
+      return x;
     });
   };
 
@@ -29,16 +45,7 @@ const Feed = () => {
     setAllPosts([]);
     if (session?.user?.id)
       session?.user.following.map((userId) => fetchPosts(userId));
-
-    fetchPosts(session?.user.id);
   };
-
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchFriendsPost();
-      fetchPosts(session?.user.id);
-    }
-  }, [session?.user.id]);
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i");
@@ -46,7 +53,8 @@ const Feed = () => {
       (item) =>
         regex.test(item.creator.username) ||
         regex.test(item.tag) ||
-        regex.test(item.prompt)
+        regex.test(item.prompt) ||
+        regex.test(item?.retweet_data?.quote)
     );
   };
 
@@ -96,7 +104,6 @@ const Feed = () => {
                 tweet={searchText ? searchedResults : allPosts}
                 setAllPosts={setAllPosts}
                 fetchPosts={fetchPosts}
-                setSearchedResults={setSearchText}
               />
             )}
           </div>

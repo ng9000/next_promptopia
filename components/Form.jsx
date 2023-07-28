@@ -19,7 +19,6 @@ const Form = ({
   const [selectedSuggestion, setSelectedSuggestion] = useState(0);
   const inputRef = useRef(null);
 
-  console.log(post);
   const handleInputChange = (e) => {
     const value = e.target.value;
     setPost(value);
@@ -36,6 +35,7 @@ const Form = ({
     } else if (e.key === "Enter") {
       if (items.length > 0) {
         const selectedValue = items[selectedSuggestion].hashtag;
+        console.log("enter", selectedValue);
         setPost((prevValue) =>
           prevValue.replace(/#[a-zA-Z0-9]+$/, selectedValue + " ")
         );
@@ -141,7 +141,7 @@ const Form = ({
               rows="6"
               placeholder="Type # to trigger the mention"
               style={{ width: "123%" }}
-              value={post.prompt}
+              value={post}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               ref={inputRef}

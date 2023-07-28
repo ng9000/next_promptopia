@@ -2,7 +2,7 @@ import { connectToDB } from "@/utils/database"
 import Prompt from "@/models/prompt"
 
 export const POST = async (req) => {
-    const { userId, prompt, tag, likes, image, createdAt } = await req.json()
+    const { userId, prompt, tag, likes, image, createdAt, number_of_retweets } = await req.json()
     try {
         await connectToDB()
         const newPrompt = Prompt({
@@ -10,6 +10,7 @@ export const POST = async (req) => {
             prompt,
             tag,
             likes,
+            number_of_retweets,
             image,
             createdAt
         })

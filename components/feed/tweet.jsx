@@ -11,10 +11,9 @@ import { useRouter } from "next/navigation";
 import RetweetForm from "./RetweetForm";
 import ProfileImage from "./profileImage";
 
-const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
+const Tweet = ({ tweet, setAllPosts, fetchPosts }) => {
   const [tags, setTags] = useState([]);
   const [hide, setHide] = useState("");
-  const [image, setImage] = useState("");
   const [showRetweetForm, setShowRetweetForm] = useState("");
   const [quote, setQuote] = useState("");
   const [quoteImage, setQuoteImage] = useState("");
@@ -40,8 +39,23 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
   };
 
   const handleRetweet = async (tweetData) => {
-    //console.log(tweetData);
     const trimmedValue = quote.replace(/^\s*[\r\n]/gm, "");
+
+    const updateTweet = await fetch("/api/retweet", {
+      method: "PATCH",
+      body: JSON.stringify({
+        id: tweetData._id,
+        number_of_retweets: tweetData.number_of_retweets + 1,
+      }),
+    });
+    const x = tweet.findIndex((data) => data._id === tweetData._id);
+    const updatedPosts = [...tweet];
+    updatedPosts[x] = {
+      ...updatedPosts[x],
+      number_of_retweets: tweetData.number_of_retweets + 1,
+    };
+
+    setAllPosts(updatedPosts);
 
     const retweet = await fetch("/api/retweet", {
       method: "POST",
@@ -54,6 +68,7 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
         quote: trimmedValue,
         original_tag: tweetData?.tag,
         likes: 0,
+        number_of_retweets: 0,
         original_id: tweetData._id,
         image: tweetData?.image,
         quoted_image: quoteImage,
@@ -61,7 +76,7 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
         createdAt: tweetData?.createdAt,
       }),
     });
-    const retweetResponse = await retweet.json();
+    //const retweetResponse = await retweet.json();
     setShowRetweetForm("");
     setQuote("");
     //console.log(retweetResponse);
@@ -94,7 +109,6 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
     <>
       {tweet.map((post, index) => (
         <div key={post?._id}>
-          {/* {console.log(post._id)} */}
           {post?.is_retweet ? (
             <div className="retweet">
               <div className="retweet_data">
@@ -169,14 +183,24 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
                 {/* Like */}
                 <Like setAllPosts={setAllPosts} allPosts={tweet} post={post} />
                 {/* Comment */}
-                <FaRetweet
-                  className="inline-flex mx-4 align-baseline text-lg"
-                  onClick={() => {
-                    setShowRetweetForm(index);
-                    //  setImage(post?.image);
-                    //  handleRetweet(post);
-                  }}
-                />
+                <span className="inline-flex mx-3 ">
+                  <FaRetweet
+                    className="align-baseline text-lg mx-1"
+                    onClick={() => {
+                      setShowRetweetForm(index);
+                    }}
+                  />
+                  <span
+                    className={`text-l  ${
+                      post?.number_of_retweets === 0 ? "hidden" : ""
+                    }`}
+                  >
+                    {post?.number_of_retweets}
+                    <b className="opacity-50">
+                      {post?.number_of_retweets === 1 ? "Retweet" : "Retweets"}
+                    </b>
+                  </span>
+                </span>
                 <Comment
                   postIndex={index}
                   hide={hide}
@@ -239,13 +263,24 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts, setSearchedResults }) => {
                 {/* Like */}
                 <Like setAllPosts={setAllPosts} allPosts={tweet} post={post} />
                 {/* Retweet */}
-                <FaRetweet
-                  className="inline-flex mx-4 align-baseline text-lg"
-                  onClick={() => {
-                    setShowRetweetForm(index);
-                  }}
-                />
-
+                <span className="inline-flex mx-3 ">
+                  <FaRetweet
+                    className="align-baseline text-lg mx-1"
+                    onClick={() => {
+                      setShowRetweetForm(index);
+                    }}
+                  />
+                  <span
+                    className={`text-l  ${
+                      post?.number_of_retweets === 0 ? "hidden" : ""
+                    }`}
+                  >
+                    {post?.number_of_retweets}
+                    <b className="opacity-50">
+                      {post?.number_of_retweets === 1 ? "Retweet" : "Retweets"}
+                    </b>
+                  </span>
+                </span>
                 {/* Comment */}
                 <Comment
                   postIndex={index}

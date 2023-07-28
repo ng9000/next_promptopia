@@ -26,13 +26,14 @@ const TweetForm = ({ setAllComments, tweetId }) => {
             prompt: newComment,
             userId: session?.user.id,
             likes: 0,
+            number_of_retweets: 0,
             image: image,
             createdAt: new Date(),
           }),
         });
         const responseData = await response.json();
+
         if (response.ok) {
-          // handleUpdateComment(tweetId);
           patchComment(responseData);
           setNewComment("");
           setImage("");
@@ -43,6 +44,7 @@ const TweetForm = ({ setAllComments, tweetId }) => {
       }
     }
   };
+
   const patchComment = async (postId) => {
     try {
       const response = await fetch(`/api/comment/${tweetId}`, {
@@ -66,20 +68,31 @@ const TweetForm = ({ setAllComments, tweetId }) => {
       {image ? (
         <>
           <img src={image} alt="test" className="image_upload mb-5" />
-          <FaTrash
+          {/* <FaTrash
             className="delete_upload_user"
             onClick={() => {
               setImage("");
             }}
-          />
+          /> */}
         </>
       ) : null}
       <form onSubmit={handleComment} className="my-2">
-        <label htmlFor="imageSend">
-          <span className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded inline-flex chat_search_user me-1">
-            <FaImage />
+        {image ? (
+          <span
+            onClick={() => {
+              setImage("");
+            }}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold rounded inline-flex chat_search_user me-1"
+          >
+            <FaTrash />
           </span>
-        </label>
+        ) : (
+          <label htmlFor="imageSend">
+            <span className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded inline-flex chat_search_user me-1">
+              <FaImage />
+            </span>
+          </label>
+        )}
         <input
           type="file"
           accept="image/*"
