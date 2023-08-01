@@ -1,7 +1,9 @@
 "use client";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tweet from "./tweet";
+import Loading from "./loading";
+import { useRouter } from "next/navigation";
 
 const Explore = () => {
   const [allPosts, setAllPosts] = useState([]);
@@ -9,6 +11,9 @@ const Explore = () => {
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
   const { data: session } = useSession();
+  const timeoutRef = useRef(null);
+  const router = useRouter();
+
   // console.log("all posts gkjjkjkjkhjkkjhk", allPosts);
 
   const fetchPosts = async () => {
@@ -20,7 +25,18 @@ const Explore = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    if (!session?.user?.id) {
+      timeoutRef.current = setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } else {
+      clearTimeout(timeoutRef.current);
+      fetchPosts();
+    }
+
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
   }, [session?.user.id]);
 
   const filterPrompts = (searchtext) => {
@@ -56,6 +72,10 @@ const Explore = () => {
       }, 100)
     );
   };
+
+  if (!session?.user.id) {
+    return <Loading />;
+  }
   return (
     <div>
       <span className="blue_gradient text-3xl">Explore</span>

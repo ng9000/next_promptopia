@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@/components/Form";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Loading from "../loading";
 
 const CreatePrompt = () => {
   const router = useRouter();
@@ -11,10 +12,22 @@ const CreatePrompt = () => {
   const [image, setImage] = useState("");
   const [post, setPost] = useState("");
   const [tags, setTags] = useState([]);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
-    getTags();
-  }, []);
+    if (!session?.user?.id) {
+      timeoutRef.current = setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } else {
+      clearTimeout(timeoutRef.current);
+      getTags();
+    }
+
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, [session?.user.id]);
 
   const getTags = async () => {
     const tags = await fetch("/api/hashtags", {
@@ -108,14 +121,13 @@ const CreatePrompt = () => {
     }
   };
 
-  const imageUpload = (e) => {
-    var reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    reader.onload = () => {
-      setImage(reader.result);
-    };
-  };
-
+  if (!session?.user.id) {
+    return (
+      <h1 className="align-middle text-center">
+        <Loading />
+      </h1>
+    );
+  }
   return (
     <div>
       <Form
@@ -124,7 +136,6 @@ const CreatePrompt = () => {
         setPost={setPost}
         submitting={submitting}
         handleSubmit={createPrompt}
-        imageUpload={imageUpload}
         image={image}
         setImage={setImage}
         tags={tags}

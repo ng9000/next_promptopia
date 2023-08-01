@@ -41,7 +41,7 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts }) => {
   const handleRetweet = async (tweetData) => {
     const trimmedValue = quote.replace(/^\s*[\r\n]/gm, "");
 
-    const updateTweet = await fetch("/api/retweet", {
+    await fetch("/api/retweet", {
       method: "PATCH",
       body: JSON.stringify({
         id: tweetData._id,
@@ -57,7 +57,7 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts }) => {
 
     setAllPosts(updatedPosts);
 
-    const retweet = await fetch("/api/retweet", {
+    await fetch("/api/retweet", {
       method: "POST",
       body: JSON.stringify({
         original_creator: tweetData.creator._id,
@@ -70,17 +70,14 @@ const Tweet = ({ tweet, setAllPosts, fetchPosts }) => {
         likes: 0,
         number_of_retweets: 0,
         original_id: tweetData._id,
-        image: tweetData?.image,
+        image: tweetData?.is_retweet ? "" : tweetData?.image,
         quoted_image: quoteImage,
         retweetedAt: new Date(),
         createdAt: tweetData?.createdAt,
       }),
     });
-    //const retweetResponse = await retweet.json();
     setShowRetweetForm("");
     setQuote("");
-    //console.log(retweetResponse);
-    // setAllPosts((prevAllPosts) => [...prevAllPosts, retweetResponse]);
     fetchPosts(session?.user.id);
   };
 

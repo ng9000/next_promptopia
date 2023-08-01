@@ -8,13 +8,11 @@ const Form = ({
   setPost,
   submitting,
   handleSubmit,
-  imageUpload,
   image,
   setImage,
   tags,
 }) => {
   const key = "#";
-
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(0);
   const inputRef = useRef(null);
@@ -67,10 +65,18 @@ const Form = ({
 
   const items = filterTagsByInput(tags, post);
 
+  const imageUpload = (e) => {
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+  };
+
   return (
     <section className="w-full max-w-full flex-start flex-col">
       <h1 className="head_text text-left">
-        <span className="blue_gradient">{type} Post</span>
+        <span className="blue_gradient">{type} Tweet</span>
       </h1>
       <p className="desc text-left max-w-md">
         {type} and share amazing prompts with the world, and let your
@@ -139,7 +145,7 @@ const Form = ({
             <textarea
               className="form_textarea"
               rows="6"
-              placeholder="Type # to trigger the mention"
+              placeholder="Write your tweet here"
               style={{ width: "123%" }}
               value={post}
               onChange={handleInputChange}

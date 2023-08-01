@@ -18,7 +18,7 @@ export const GET = async (request, { params }) => {
 
 // PATCH
 export const PATCH = async (request, { params }) => {
-    const { prompt, tag } = await request.json()
+    const { prompt, image } = await request.json()
 
     try {
         await connectToDB();
@@ -27,7 +27,8 @@ export const PATCH = async (request, { params }) => {
             return new Response("Prompt doesnt exist", { status: 404 })
 
         existingPrompt.prompt = prompt;
-        existingPrompt.tag = tag;
+        existingPrompt.image = image;
+        //existingPrompt.tag = tag;
 
         await existingPrompt.save()
         return new Response(JSON.stringify(existingPrompt), { status: 200 })

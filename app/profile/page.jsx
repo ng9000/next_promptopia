@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Profile from "@/components/Profile";
 import { useSession } from "next-auth/react";
+import Loading from "../loading";
 
 const MyProfile = () => {
   const router = useRouter();
@@ -10,6 +11,22 @@ const MyProfile = () => {
   const userId = searchParams.get("id");
   const [posts, setPosts] = useState([]);
   const { data: session } = useSession();
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!session?.user?.id) {
+      timeoutRef.current = setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } else {
+      clearTimeout(timeoutRef.current);
+      fetchPosts();
+    }
+
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const fetchPosts = async () => {
     const response = await fetch(`/api/users/${userId}/post`, {
@@ -18,14 +35,6 @@ const MyProfile = () => {
     const data = await response.json();
     setPosts(data);
   };
-
-  useEffect(() => {
-    // if (session?.user.id) {
-    //   router.push(`profile/${session?.user.id}`);
-    // } else {
-    fetchPosts();
-    // }
-  }, []);
 
   const handleUpdate = (post) => {
     router.push(`/update-prompt?id=${post._id}`);
@@ -46,6 +55,9 @@ const MyProfile = () => {
     }
   };
 
+  if (!session?.user.id) {
+    return <Loading />;
+  }
   return (
     <div>
       <Profile

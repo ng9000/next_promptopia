@@ -9,12 +9,20 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
+  const [showLoginMessage, setShowLoginMessage] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
     if (session?.user?.id) {
       fetchFriendsPost();
       fetchPosts(session?.user.id);
+    } else {
+      if (!session?.user?.id) {
+        const timeoutId = setTimeout(() => {
+          setShowLoginMessage(true);
+        }, 3000);
+        return () => clearTimeout(timeoutId);
+      }
     }
   }, [session?.user.id]);
 
@@ -77,7 +85,7 @@ const Feed = () => {
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);
         setSearchedResults(searchResult);
-      }, 100)
+      }, 500)
     );
   };
   return (
@@ -109,7 +117,9 @@ const Feed = () => {
           </div>
         </>
       ) : (
-        <div className="text-3xl">Login to view posts</div>
+        <div className="text-3xl">
+          {showLoginMessage ? <p>Login to view Posts</p> : <Loading />}
+        </div>
       )}
     </div>
   );

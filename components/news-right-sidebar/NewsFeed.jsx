@@ -8,9 +8,11 @@ const NewsFeed = () => {
   const { data: session } = useSession();
   //console.log(followUsers);
   useEffect(() => {
-    getExploreData();
-    getNewFollowers();
-  }, []);
+    if (session?.user.id) {
+      getExploreData();
+      getNewFollowers();
+    }
+  }, [session?.user.id]);
 
   const getNewFollowers = async () => {
     try {
